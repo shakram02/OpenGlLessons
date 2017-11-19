@@ -23,9 +23,8 @@ class BasicRenderer implements GLSurfaceView.Renderer {
     /**
      * Store our model data in a float buffer.
      */
-    private final FloatBuffer mTriangle1Vertices;
-    private FloatBuffer mTriangle2Vertices;
-    private FloatBuffer mTriangle3Vertices;
+    private final FloatBuffer mTriangleVertices;
+    private final FloatBuffer mTriangleColors;
 
     final String vertexShader =
             // A constant representing the combined model/view/projection matrix.
@@ -109,19 +108,28 @@ class BasicRenderer implements GLSurfaceView.Renderer {
                 // X, Y, Z,
                 // R, G, B, A
                 -0.5f, -0.25f, 0.0f,
-                1.0f, 0.0f, 0.0f, 1.0f,
-
                 0.5f, -0.25f, 0.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-
                 0.0f, 0.559016994f, 0.0f,
-                0.0f, 1.0f, 0.0f, 1.0f};
+        };
 
-        mTriangle1Vertices = ByteBuffer
+        final float[] triangleColorData = {
+                1.0f, 0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f
+        };
+
+        mTriangleVertices = ByteBuffer
                 .allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-        mTriangle1Vertices.put(triangle1VerticesData);
+        mTriangleColors = ByteBuffer
+                .allocateDirect(triangleColorData.length * mBytesPerFloat)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+
+
+        mTriangleVertices.put(triangle1VerticesData);
+        mTriangleColors.put(triangleColorData);
     }
 
 
@@ -182,7 +190,7 @@ class BasicRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
 
-        drawTriangle(mTriangle1Vertices);
+        drawTriangle(mTriangleVertices, mTriangleColors);
     }
 
     /**
@@ -217,18 +225,21 @@ class BasicRenderer implements GLSurfaceView.Renderer {
     private final int mColorDataSize = 4;
     private final AttribPointerManager attribPointerManager = new AttribPointerManager();
 
-    private void drawTriangle(final FloatBuffer aTriangleBuffer) {
-        // Pass in the position information
-        aTriangleBuffer.position(mPositionOffset);
+    private void drawTriangle(final FloatBuffer locationBuffer, final FloatBuffer colorBuffer) {
+        attribPointerManager.start();
 
+        // Pass in the position information
+        locationBuffer.position(mPositionOffset);
         attribPointerManager.loadData(mPositionHandle, mPositionDataSize,
-                GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
+                GLES20.GL_FLOAT, false, 3 * mBytesPerFloat, locationBuffer);
 
 
         // Pass in the color information
-        aTriangleBuffer.position(mColorOffset);
+        colorBuffer.position(0);
         attribPointerManager.loadData(mColorHandle, mColorDataSize,
-                GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
+                GLES20.GL_FLOAT, false, 4 * mBytesPerFloat, colorBuffer);
+        ErrorChecker.checkGlError("Draw triangle");
+
 
         // This multiplies the view matrix by the model matrix, and stores the
         // result in the MVP matrix (which currently contains model * view).
