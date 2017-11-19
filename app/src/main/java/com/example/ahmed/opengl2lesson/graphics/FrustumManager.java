@@ -1,10 +1,12 @@
-package com.example.ahmed.opengl2lesson;
+package com.example.ahmed.opengl2lesson.graphics;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 /**
  * Created by ahmed on 11/19/17.
+ * <p>
+ * Creates a view Frustum
  */
 
 public class FrustumManager {

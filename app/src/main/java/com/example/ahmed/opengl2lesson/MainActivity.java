@@ -7,6 +7,8 @@ import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.ahmed.opengl2lesson.graphics.BasicRenderer;
+
 public class MainActivity extends AppCompatActivity {
 
     /**

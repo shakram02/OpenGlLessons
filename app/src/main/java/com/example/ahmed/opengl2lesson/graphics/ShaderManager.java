@@ -1,4 +1,4 @@
-package com.example.ahmed.opengl2lesson;
+package com.example.ahmed.opengl2lesson.graphics;
 
 import android.opengl.GLES20;
 

@@ -1,4 +1,4 @@
-package com.example.ahmed.opengl2lesson;
+package com.example.ahmed.opengl2lesson.graphics;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -18,7 +18,7 @@ import javax.microedition.khronos.opengles.GL10;
  * OpenGL lesson 1
  */
 
-class BasicRenderer implements GLSurfaceView.Renderer {
+public class BasicRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Store our model data in a float buffer.
@@ -102,7 +102,7 @@ class BasicRenderer implements GLSurfaceView.Renderer {
      */
     private float[] mModelMatrix = new float[16];
 
-    BasicRenderer() {
+    public BasicRenderer() {
         // This triangle is red, green, and blue.
         final float[] triangle1VerticesData = {
                 // X, Y, Z,
