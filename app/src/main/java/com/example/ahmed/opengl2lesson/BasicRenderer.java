@@ -215,20 +215,20 @@ class BasicRenderer implements GLSurfaceView.Renderer {
      * Size of the color data in elements.
      */
     private final int mColorDataSize = 4;
+    private final AttribPointerManager attribPointerManager = new AttribPointerManager();
 
     private void drawTriangle(final FloatBuffer aTriangleBuffer) {
         // Pass in the position information
         aTriangleBuffer.position(mPositionOffset);
-        GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
-                mStrideBytes, aTriangleBuffer);
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+        attribPointerManager.loadData(mPositionHandle, mPositionDataSize,
+                GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
+
 
         // Pass in the color information
         aTriangleBuffer.position(mColorOffset);
-        GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false,
-                mStrideBytes, aTriangleBuffer);
-
-        GLES20.glEnableVertexAttribArray(mColorHandle);
+        attribPointerManager.loadData(mColorHandle, mColorDataSize,
+                GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
 
         // This multiplies the view matrix by the model matrix, and stores the
         // result in the MVP matrix (which currently contains model * view).
@@ -241,8 +241,6 @@ class BasicRenderer implements GLSurfaceView.Renderer {
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
 
-        GLES20.glDisableVertexAttribArray(mPositionDataSize);
-        GLES20.glDisableVertexAttribArray(mColorHandle);
-
+        attribPointerManager.disableHandles();
     }
 }
