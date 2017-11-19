@@ -26,7 +26,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer mTriangleVertices;
     private final FloatBuffer mTriangleColors;
 
-    final String vertexShader =
+    private final String vertexShader =
             // A constant representing the combined model/view/projection matrix.
             "uniform mat4 u_MVPMatrix;      \n"
                     // Per-vertex position information we will pass in.
@@ -51,7 +51,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
                     + "               * a_Position;   \n"
                     + "}                              \n";
 
-    final String fragmentShader =
+    private final String fragmentShader =
             // Set the default precision to medium. We don't need as
             // high of a precision in the fragment shader.
             "precision mediump float;       \n"
@@ -88,7 +88,6 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
      * This will be used to pass in model color information.
      */
     private int mColorHandle;
-
 
     /**
      * Store the projection matrix. This is used to project the scene onto a 2D viewport.
@@ -200,26 +199,6 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
     private float[] mMVPMatrix = new float[16];
 
     /**
-     * How many elements per vertex.
-     */
-    private final int mStrideBytes = 7 * mBytesPerFloat;
-
-    /**
-     * Offset of the position data.
-     */
-    private final int mPositionOffset = 0;
-
-    /**
-     * Size of the position data in elements.
-     */
-    private final int mPositionDataSize = 3;
-
-    /**
-     * Offset of the color data.
-     */
-    private final int mColorOffset = 3;
-
-    /**
      * Size of the color data in elements.
      */
     private final int mColorDataSize = 4;
@@ -229,17 +208,15 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
         shaderDataLoader.start();
 
         // Pass in the position information
-        locationBuffer.position(mPositionOffset);
+
+        int mPositionDataSize = 3;
         shaderDataLoader.loadData(mPositionHandle, mPositionDataSize,
                 GLES20.GL_FLOAT, false, 3 * mBytesPerFloat, locationBuffer);
 
 
         // Pass in the color information
-        colorBuffer.position(0);
         shaderDataLoader.loadData(mColorHandle, mColorDataSize,
                 GLES20.GL_FLOAT, false, 4 * mBytesPerFloat, colorBuffer);
-        ErrorChecker.checkGlError("Draw triangle");
-
 
         // This multiplies the view matrix by the model matrix, and stores the
         // result in the MVP matrix (which currently contains model * view).
