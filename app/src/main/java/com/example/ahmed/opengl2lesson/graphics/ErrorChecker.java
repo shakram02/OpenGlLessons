@@ -21,10 +21,31 @@ public class ErrorChecker {
      * @param glOperation - Name of the OpenGL call to check.
      */
     static void checkGlError(String glOperation) {
+        String errorMessage = null;
         int error;
+
         while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-            Log.e("CUSTOM_GL_ERR", glOperation + ": glError " + error);
-            throw new RuntimeException(glOperation + ": glError " + error);
+
+            switch (error) {
+                case GLES20.GL_INVALID_OPERATION:
+                    errorMessage = "INVALID_OPERATION";
+                    break;
+                case GLES20.GL_INVALID_ENUM:
+                    errorMessage = "INVALID_ENUM";
+                    break;
+                case GLES20.GL_INVALID_VALUE:
+                    errorMessage = "INVALID_VALUE";
+                    break;
+                case GLES20.GL_OUT_OF_MEMORY:
+                    errorMessage = "OUT_OF_MEMORY";
+                    break;
+                case GLES20.GL_INVALID_FRAMEBUFFER_OPERATION:
+                    errorMessage = "INVALID_FRAMEBUFFER_OPERATION";
+                    break;
+            }
+
+            Log.e("CUSTOM_GL_ERR", glOperation + ": glError " + errorMessage);
+            throw new RuntimeException(glOperation + ": glError " + errorMessage);
         }
     }
 }
