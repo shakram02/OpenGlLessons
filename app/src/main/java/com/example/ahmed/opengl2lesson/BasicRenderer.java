@@ -223,20 +223,20 @@ class BasicRenderer implements GLSurfaceView.Renderer {
      * Size of the color data in elements.
      */
     private final int mColorDataSize = 4;
-    private final AttribPointerManager attribPointerManager = new AttribPointerManager();
+    private final ShaderDataLoader shaderDataLoader = new ShaderDataLoader();
 
     private void drawTriangle(final FloatBuffer locationBuffer, final FloatBuffer colorBuffer) {
-        attribPointerManager.start();
+        shaderDataLoader.start();
 
         // Pass in the position information
         locationBuffer.position(mPositionOffset);
-        attribPointerManager.loadData(mPositionHandle, mPositionDataSize,
+        shaderDataLoader.loadData(mPositionHandle, mPositionDataSize,
                 GLES20.GL_FLOAT, false, 3 * mBytesPerFloat, locationBuffer);
 
 
         // Pass in the color information
         colorBuffer.position(0);
-        attribPointerManager.loadData(mColorHandle, mColorDataSize,
+        shaderDataLoader.loadData(mColorHandle, mColorDataSize,
                 GLES20.GL_FLOAT, false, 4 * mBytesPerFloat, colorBuffer);
         ErrorChecker.checkGlError("Draw triangle");
 
@@ -252,6 +252,6 @@ class BasicRenderer implements GLSurfaceView.Renderer {
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
 
-        attribPointerManager.disableHandles();
+        shaderDataLoader.disableHandles();
     }
 }

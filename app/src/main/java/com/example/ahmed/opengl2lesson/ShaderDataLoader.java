@@ -9,7 +9,7 @@ import java.util.Stack;
  * Created by ahmed on 11/19/17.
  */
 
-class AttribPointerManager {
+class ShaderDataLoader {
     private Stack<Integer> handleStack;
     private States state;
 
@@ -18,7 +18,7 @@ class AttribPointerManager {
         Closed,
     }
 
-    AttribPointerManager() {
+    ShaderDataLoader() {
         handleStack = new Stack<>();
         state = States.Closed;
     }
