@@ -6,31 +6,16 @@ import android.opengl.GLES20;
  * Created by ahmed on 11/19/17.
  */
 
-public class ShaderManager {
-    public static int createShader(int shaderType, String code) throws RuntimeException {
-        int vertexShaderHandle = GLES20.glCreateShader(shaderType);
-        if (vertexShaderHandle == 0) {
-            throw new RuntimeException("Error creating vertex shader.");
-        }
-
-        GLES20.glShaderSource(vertexShaderHandle, code);
-        GLES20.glCompileShader(vertexShaderHandle);
-
-        // Get the compilation status.
-        final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(vertexShaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-
-        // If the compilation failed, delete the shader.
-        if (compileStatus[0] == 0) {
-            GLES20.glDeleteShader(vertexShaderHandle);
-            String error = GLES20.glGetShaderInfoLog(vertexShaderHandle);
-            throw new RuntimeException("Failed to compile shader:" + error);
-        }
-
-        return vertexShaderHandle;
+class ShaderManager {
+    public static int compileVertexShader(String shaderCode) {
+        return createShader(GLES20.GL_VERTEX_SHADER, shaderCode);
     }
 
-    public static int createProgram(int vertexShaderHandle, int fragmentShaderHandle) {
+    public static int compileFragmentShader(String shaderCode) {
+        return createShader(GLES20.GL_FRAGMENT_SHADER, shaderCode);
+    }
+
+    static int createProgram(int vertexShaderHandle, int fragmentShaderHandle) {
         // Create a program object and store the handle to it.
         int programHandle = GLES20.glCreateProgram();
 
@@ -59,5 +44,30 @@ public class ShaderManager {
         }
 
         return programHandle;
+    }
+
+    private static int createShader(int shaderType, String code) throws RuntimeException {
+        int vertexShaderHandle = GLES20.glCreateShader(shaderType);
+
+        if (vertexShaderHandle == 0) {
+            ErrorChecker.checkGlError("createShader");
+            throw new RuntimeException("Error creating vertex shader.");
+        }
+
+        GLES20.glShaderSource(vertexShaderHandle, code);
+        GLES20.glCompileShader(vertexShaderHandle);
+
+        // Get the compilation status.
+        final int[] compileStatus = new int[1];
+        GLES20.glGetShaderiv(vertexShaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
+
+        // If the compilation failed, delete the shader.
+        if (compileStatus[0] == 0) {
+            GLES20.glDeleteShader(vertexShaderHandle);
+            String error = GLES20.glGetShaderInfoLog(vertexShaderHandle);
+            throw new RuntimeException("Failed to compile shader:" + error);
+        }
+
+        return vertexShaderHandle;
     }
 }

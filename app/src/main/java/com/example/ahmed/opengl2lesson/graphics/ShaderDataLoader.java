@@ -53,8 +53,8 @@ class ShaderDataLoader {
      * @param strideInBytes       Number of bytes to jump when reading to get a value
      * @param singleContentBuffer Buffer containing data
      */
-    void loadData(int handle, int itemLength,
-                  int type, boolean normalized, int strideInBytes, Buffer singleContentBuffer) {
+    public void loadData(int handle, int itemLength,
+                         int type, boolean normalized, int strideInBytes, Buffer singleContentBuffer) {
         assertInState(States.Started);
 
         singleContentBuffer.position(0);

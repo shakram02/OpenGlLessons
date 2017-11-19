@@ -155,10 +155,8 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX,
                 lookY, lookZ, upX, upY, upZ);
 
-        int vertexShaderHandle = ShaderManager
-                .createShader(GLES20.GL_VERTEX_SHADER, vertexShader);
-        int fragmentShaderHandle = ShaderManager
-                .createShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+        int vertexShaderHandle = ShaderManager.compileVertexShader(vertexShader);
+        int fragmentShaderHandle = ShaderManager.compileFragmentShader(fragmentShader);
 
         // Create a program object and store the handle to it.
         int programHandle = ShaderManager.createProgram(vertexShaderHandle, fragmentShaderHandle);

@@ -30,6 +30,7 @@ public abstract class FloatBufferBasedArray {
         return raw.size() / floatsPerItem;
     }
 
+
     /**
      * @return Size of all objects in the array in bytes
      */
@@ -70,25 +71,30 @@ public abstract class FloatBufferBasedArray {
         cache = buffer;
     }
 
-    void assertLength() {
-        if (raw.size() % floatsPerItem != 0) {
-            throw new RuntimeException("Invalid points were added");
-        }
-    }
 
     void addAll(Iterable<Float> items) {
+        isDirty = true;
+
         for (float v : items) {
             this.addItem(v);
         }
 
-        assertLength();
+        validateLength();
     }
 
     void addAll(float[] items) {
+        isDirty = true;
+
         for (float v : items) {
             this.addItem(v);
         }
 
-        assertLength();
+        validateLength();
+    }
+
+    private void validateLength() {
+        if (raw.size() % floatsPerItem != 0) {
+            throw new RuntimeException("Invalid points were added");
+        }
     }
 }
