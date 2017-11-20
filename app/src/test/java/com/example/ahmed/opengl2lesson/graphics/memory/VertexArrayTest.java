@@ -1,6 +1,10 @@
 package com.example.ahmed.opengl2lesson.graphics.memory;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
+
+import java.nio.FloatBuffer;
 
 import static org.junit.Assert.*;
 
@@ -10,13 +14,16 @@ import static org.junit.Assert.*;
  */
 public class VertexArrayTest {
     @Test
-    public void add_item_isCorrect() throws Exception {
+    public void add_item_isCorrect() {
         VertexArray vertexArray = new VertexArray();
 
         vertexArray.addVertex(new VertexInstance(0, 0.41f, 0));
-        float[] arr = vertexArray.getBuffer().array();
+        FloatBuffer vertexBuffer = vertexArray.getBuffer();
 
-        assertArrayEquals("Failed to convert to float array",
-                new float[]{0f, 0.41f, 0f}, arr, 0.1f);
+        float[] trueValues = new float[]{0f, 0.41f, 0f};
+        int i = 0;
+        while (vertexBuffer.hasRemaining()) {
+            Assert.assertEquals(vertexBuffer.get(), trueValues[i++]);
+        }
     }
 }
