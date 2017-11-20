@@ -33,7 +33,8 @@ public abstract class FloatBufferBasedArray {
      */
     private static final int FLOAT_SIZE = 4;
 
-    FloatBufferBasedArray(float[] items, int floatsPerItem) {
+    // This constructor is private to force the knowledge of data normalization
+    private FloatBufferBasedArray(float[] items, int floatsPerItem) {
         if (BuildConfig.DEBUG && items.length % floatsPerItem != 0) {
             throw new RuntimeException(String.format("Invalid data array, " +
                     "item count: %s, floats per item: %s", items.length, floatsPerItem));
@@ -86,7 +87,7 @@ public abstract class FloatBufferBasedArray {
         return cache;
     }
 
-    void addItem(float a) {
+    private void addItem(float a) {
         isDirty = true;
 
         this.raw.add(a);
@@ -110,16 +111,6 @@ public abstract class FloatBufferBasedArray {
         cache = buffer;
     }
 
-
-    void addAll(Iterable<Float> items) {
-        isDirty = true;
-
-        for (float v : items) {
-            this.addItem(v);
-        }
-
-        validateLength();
-    }
 
     void addAll(float[] items) {
         isDirty = true;
