@@ -13,6 +13,9 @@ import java.util.ArrayList;
  * floating point GPU data to be sent for rendering purposes, they might be position
  * or color data
  * <p>
+ * This class's data is immutable and can't be changed during runtime. The normalization of
+ * data items must be known during construction
+ * <p>
  * Represents a class that can be sent over to the GPU using a buffer. Maintaining the state
  * of the buffer is handled by the user
  */
@@ -30,15 +33,14 @@ public abstract class FloatBufferBasedArray {
      */
     private static final int FLOAT_SIZE = 4;
 
-    FloatBufferBasedArray(int glHandle, int floatsPerItem, boolean normalized) {
-        this(floatsPerItem, normalized);
-        this.glHandle = glHandle;
-    }
-
-    FloatBufferBasedArray(int floatsPerItem, boolean normalized) {
+    FloatBufferBasedArray(float[] items, int floatsPerItem) {
+        if (BuildConfig.DEBUG && items.length % floatsPerItem != 0) {
+            throw new RuntimeException(String.format("Invalid data array, " +
+                    "item count: %s, floats per item: %s", items.length, floatsPerItem));
+        }
         this.floatsPerItem = floatsPerItem;
-        this.normalized = normalized;
         raw = new ArrayList<>();
+        this.addAll(items);
     }
 
     FloatBufferBasedArray(float[] items, int glHandle, int floatsPerItem, boolean normalized) {
@@ -47,13 +49,10 @@ public abstract class FloatBufferBasedArray {
     }
 
     FloatBufferBasedArray(float[] items, int floatsPerItem, boolean normalized) {
-        this(floatsPerItem, normalized);
-        if (BuildConfig.DEBUG && items.length % floatsPerItem != 0) {
-            throw new RuntimeException(String.format("Invalid data array, " +
-                    "item count: %s, floats per item: %s", items.length, floatsPerItem));
-        }
+        this(items, floatsPerItem);
 
-        this.addAll(items);
+        this.floatsPerItem = floatsPerItem;
+        this.normalized = normalized;
     }
 
     /**

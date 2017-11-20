@@ -24,19 +24,6 @@ public class VertexArray extends FloatBufferBasedArray {
         super(items, FLOATS_PER_ITEM, true);
     }
 
-    public VertexArray(int glHandle, boolean normalized) {
-        super(glHandle, FLOATS_PER_ITEM, normalized);
-    }
-
-    public VertexArray(boolean normalized) {
-        super(FLOATS_PER_ITEM, normalized);
-    }
-
-    VertexArray() {
-        super(FLOATS_PER_ITEM, true);
-    }
-
-
     public FloatBuffer getBuffer() {
         return super.getBuffer();
     }
