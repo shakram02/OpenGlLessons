@@ -2,12 +2,17 @@ package com.example.ahmed.opengl2lesson.graphics.memory;
 
 import android.opengl.GLES20;
 
+import com.example.ahmed.opengl2lesson.BuildConfig;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 /**
+ * floating point GPU data to be sent for rendering purposes, they might be position
+ * or color data
+ * <p>
  * Represents a class that can be sent over to the GPU using a buffer. Maintaining the state
  * of the buffer is handled by the user
  */
@@ -43,6 +48,11 @@ public abstract class FloatBufferBasedArray {
 
     FloatBufferBasedArray(float[] items, int floatsPerItem, boolean normalized) {
         this(floatsPerItem, normalized);
+        if (BuildConfig.DEBUG && items.length % floatsPerItem != 0) {
+            throw new RuntimeException(String.format("Invalid data array, " +
+                    "item count: %s, floats per item: %s", items.length, floatsPerItem));
+        }
+
         this.addAll(items);
     }
 
@@ -159,4 +169,5 @@ public abstract class FloatBufferBasedArray {
     public int getStride() {
         return FLOAT_SIZE * floatsPerItem;
     }
+
 }

@@ -15,9 +15,7 @@ import static org.junit.Assert.*;
 public class VertexArrayTest {
     @Test
     public void add_item_isCorrect() {
-        VertexArray vertexArray = new VertexArray();
-
-        vertexArray.addVertex(new VertexInstance(0, 0.41f, 0));
+        VertexArray vertexArray = new VertexArray(new float[]{0, 0.41f, 0});
         FloatBuffer vertexBuffer = vertexArray.getBuffer();
 
         float[] trueValues = new float[]{0f, 0.41f, 0f};
