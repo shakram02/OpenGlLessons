@@ -1,8 +1,6 @@
-package com.example.ahmed.opengl2lesson.graphics;
+package com.example.ahmed.opengl2lesson.graphics.gl_internals;
 
 import android.opengl.GLES20;
-
-import com.example.ahmed.opengl2lesson.BuildConfig;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

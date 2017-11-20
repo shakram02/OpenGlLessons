@@ -1,4 +1,4 @@
-package com.example.ahmed.opengl2lesson.graphics;
+package com.example.ahmed.opengl2lesson.graphics.gl_internals;
 
 import android.opengl.GLES20;
 
@@ -6,7 +6,7 @@ import android.opengl.GLES20;
  * Created by ahmed on 11/19/17.
  */
 
-class ShaderManager {
+public class ShaderManager {
     public static int compileVertexShader(String shaderCode) {
         return createShader(GLES20.GL_VERTEX_SHADER, shaderCode);
     }
@@ -15,7 +15,7 @@ class ShaderManager {
         return createShader(GLES20.GL_FRAGMENT_SHADER, shaderCode);
     }
 
-    static int createProgram(int vertexShaderHandle, int fragmentShaderHandle) {
+    public static int createProgram(int vertexShaderHandle, int fragmentShaderHandle) {
         // Create a program object and store the handle to it.
         int programHandle = GLES20.glCreateProgram();
 

@@ -1,4 +1,4 @@
-package com.example.ahmed.opengl2lesson.graphics.memory;
+package com.example.ahmed.opengl2lesson.graphics.gl_internals.memory;
 
 import java.nio.FloatBuffer;
 

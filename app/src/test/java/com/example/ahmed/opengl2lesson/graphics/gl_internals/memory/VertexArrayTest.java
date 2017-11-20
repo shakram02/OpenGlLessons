@@ -1,12 +1,10 @@
-package com.example.ahmed.opengl2lesson.graphics.memory;
+package com.example.ahmed.opengl2lesson.graphics.gl_internals.memory;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 
 import java.nio.FloatBuffer;
-
-import static org.junit.Assert.*;
 
 /**
  * Testing vertex array

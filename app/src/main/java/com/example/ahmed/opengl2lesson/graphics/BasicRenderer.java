@@ -5,12 +5,11 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import com.example.ahmed.opengl2lesson.graphics.memory.ColorArray;
-import com.example.ahmed.opengl2lesson.graphics.memory.VertexArray;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
+import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.ColorArray;
+import com.example.ahmed.opengl2lesson.graphics.gl_internals.FrustumManager;
+import com.example.ahmed.opengl2lesson.graphics.gl_internals.ShaderDataLoader;
+import com.example.ahmed.opengl2lesson.graphics.gl_internals.ShaderManager;
+import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.VertexArray;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -191,10 +190,6 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
      */
     private float[] mMVPMatrix = new float[16];
 
-    /**
-     * Size of the color data in elements.
-     */
-    private final int mColorDataSize = 4;
     private final ShaderDataLoader shaderDataLoader = new ShaderDataLoader();
 
     private void drawTriangle() {

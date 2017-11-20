@@ -1,9 +1,8 @@
-package com.example.ahmed.opengl2lesson.graphics;
+package com.example.ahmed.opengl2lesson.graphics.gl_internals;
 
 import android.opengl.GLES20;
 
-import com.example.ahmed.opengl2lesson.graphics.memory.FloatBufferBasedArray;
-import com.example.ahmed.opengl2lesson.graphics.memory.VertexArray;
+import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.FloatBufferBasedArray;
 
 import java.nio.Buffer;
 import java.util.Stack;
@@ -14,7 +13,7 @@ import java.util.Stack;
  * Manages sending data to GPU
  */
 
-class ShaderDataLoader {
+public class ShaderDataLoader {
     private Stack<Integer> handleStack;
     private States state;
 
@@ -28,7 +27,7 @@ class ShaderDataLoader {
         Closed,
     }
 
-    ShaderDataLoader() {
+    public ShaderDataLoader() {
         handleStack = new Stack<>();
         state = States.Closed;
     }
@@ -36,7 +35,7 @@ class ShaderDataLoader {
     /**
      * Put the machine in the start state
      */
-    void start() {
+    public void start() {
         assertInState(States.Closed);
 
         if (handleStack.size() > 0) {
@@ -73,7 +72,7 @@ class ShaderDataLoader {
         handleStack.push(handle);
     }
 
-    void loadData(FloatBufferBasedArray array) {
+    public void loadData(FloatBufferBasedArray array) {
         assertInState(States.Started);
 
 
@@ -90,7 +89,7 @@ class ShaderDataLoader {
     /**
      * Handles to data should be disabled after drawing
      */
-    void disableHandles() {
+    public void disableHandles() {
         assertInState(States.Started);
 
         while (!handleStack.empty()) {
