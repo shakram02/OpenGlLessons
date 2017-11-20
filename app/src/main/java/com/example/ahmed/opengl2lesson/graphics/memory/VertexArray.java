@@ -7,11 +7,29 @@ import java.nio.FloatBuffer;
  */
 
 public class VertexArray extends FloatBufferBasedArray {
-    public VertexArray() {
-        floatsPerItem = 3;
+    private static final int FLOATS_PER_ITEM = 3;
+
+    public VertexArray(float[] items, int glHandle, boolean normalized) {
+        super(items, glHandle, FLOATS_PER_ITEM, normalized);
     }
 
-    public void addVertex(VertexInstance vertex) {
+    public VertexArray(float[] items, boolean normalized) {
+        super(items, FLOATS_PER_ITEM, normalized);
+    }
+
+    public VertexArray(int glHandle, boolean normalized) {
+        super(glHandle, FLOATS_PER_ITEM, normalized);
+    }
+
+    public VertexArray(boolean normalized) {
+        super(FLOATS_PER_ITEM, normalized);
+    }
+
+    public VertexArray() {
+        super(FLOATS_PER_ITEM, true);
+    }
+
+    void addVertex(VertexInstance vertex) {
         super.addItem(vertex.x);
         super.addItem(vertex.y);
         super.addItem(vertex.z);
@@ -33,15 +51,14 @@ public class VertexArray extends FloatBufferBasedArray {
 
     }
 
-    public void addVertices(Iterable<VertexInstance> vertices) {
-        for (VertexInstance instance : vertices) {
-            super.addItem(instance.x);
-            super.addItem(instance.y);
-            super.addItem(instance.z);
-        }
+    public void addVertices(float[] floats) {
+        VertexInstance[] vertices = VertexInstance.fromFloats(floats);
+        this.addVertices(vertices);
     }
 
     public FloatBuffer getBuffer() {
         return super.getBuffer();
     }
+
+
 }
