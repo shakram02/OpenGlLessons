@@ -5,6 +5,8 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import com.example.ahmed.opengl2lesson.graphics.memory.VertexArray;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -23,8 +25,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
     /**
      * Store our model data in a float buffer.
      */
-    private final FloatBuffer mTriangleVertices;
-    private final FloatBuffer mTriangleColors;
+    private FloatBuffer mTriangleColors;
 
     private final String vertexShader =
             // A constant representing the combined model/view/projection matrix.
@@ -67,6 +68,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
      * How many bytes per float.
      */
     private final int mBytesPerFloat = 4;
+    private VertexArray mTriangleVertices;
 
     /**
      * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
@@ -102,33 +104,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
     private float[] mModelMatrix = new float[16];
 
     public BasicRenderer() {
-        // This triangle is red, green, and blue.
-        final float[] triangle1VerticesData = {
-                // X, Y, Z,
-                // R, G, B, A
-                -0.5f, -0.25f, 0.0f,
-                0.5f, -0.25f, 0.0f,
-                0.0f, 0.559016994f, 0.0f,
-        };
 
-        final float[] triangleColorData = {
-                1.0f, 0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f
-        };
-
-        mTriangleVertices = ByteBuffer
-                .allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-        mTriangleColors = ByteBuffer
-                .allocateDirect(triangleColorData.length * mBytesPerFloat)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-
-
-        mTriangleVertices.put(triangle1VerticesData);
-        mTriangleColors.put(triangleColorData);
     }
 
 
@@ -168,6 +144,30 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 
         // Tell OpenGL to use this program when rendering.
         GLES20.glUseProgram(programHandle);
+
+        // This triangle is red, green, and blue.
+        final float[] triangle1VerticesData = {
+                // X, Y, Z,
+                // R, G, B, A
+                -0.5f, -0.25f, 0.0f,
+                0.5f, -0.25f, 0.0f,
+                0.0f, 0.559016994f, 0.0f,
+        };
+
+        final float[] triangleColorData = {
+                1.0f, 0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f
+        };
+
+        mTriangleColors = ByteBuffer
+                .allocateDirect(triangleColorData.length * mBytesPerFloat)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        mTriangleColors.put(triangleColorData);
+
+
+        mTriangleVertices = new VertexArray(triangle1VerticesData,mPositionHandle, true);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
 
-        drawTriangle(mTriangleVertices, mTriangleColors);
+        drawTriangle();
     }
 
     /**
@@ -202,19 +202,16 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
     private final int mColorDataSize = 4;
     private final ShaderDataLoader shaderDataLoader = new ShaderDataLoader();
 
-    private void drawTriangle(final FloatBuffer locationBuffer, final FloatBuffer colorBuffer) {
+    private void drawTriangle() {
         shaderDataLoader.start();
 
         // Pass in the position information
 
-        int mPositionDataSize = 3;
-        shaderDataLoader.loadData(mPositionHandle, mPositionDataSize,
-                GLES20.GL_FLOAT, false, 3 * mBytesPerFloat, locationBuffer);
-
+        shaderDataLoader.loadData(mTriangleVertices);
 
         // Pass in the color information
         shaderDataLoader.loadData(mColorHandle, mColorDataSize,
-                GLES20.GL_FLOAT, false, 4 * mBytesPerFloat, colorBuffer);
+                GLES20.GL_FLOAT, true, 4 * mBytesPerFloat, mTriangleColors);
 
         // This multiplies the view matrix by the model matrix, and stores the
         // result in the MVP matrix (which currently contains model * view).
