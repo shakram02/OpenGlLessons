@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import com.example.ahmed.opengl2lesson.graphics.memory.ColorArray;
 import com.example.ahmed.opengl2lesson.graphics.memory.VertexArray;
 
 import java.nio.ByteBuffer;
@@ -25,7 +26,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
     /**
      * Store our model data in a float buffer.
      */
-    private FloatBuffer mTriangleColors;
+    private ColorArray mTriangleColors;
 
     private final String vertexShader =
             // A constant representing the combined model/view/projection matrix.
@@ -160,14 +161,8 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
                 0.0f, 1.0f, 0.0f, 1.0f
         };
 
-        mTriangleColors = ByteBuffer
-                .allocateDirect(triangleColorData.length * mBytesPerFloat)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
-        mTriangleColors.put(triangleColorData);
-
-
-        mTriangleVertices = new VertexArray(triangle1VerticesData,mPositionHandle, true);
+        mTriangleVertices = new VertexArray(triangle1VerticesData, mPositionHandle, true);
+        mTriangleColors = new ColorArray(triangleColorData, mColorHandle, true);
     }
 
     @Override
@@ -206,12 +201,10 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
         shaderDataLoader.start();
 
         // Pass in the position information
-
         shaderDataLoader.loadData(mTriangleVertices);
 
         // Pass in the color information
-        shaderDataLoader.loadData(mColorHandle, mColorDataSize,
-                GLES20.GL_FLOAT, true, 4 * mBytesPerFloat, mTriangleColors);
+        shaderDataLoader.loadData(mTriangleColors);
 
         // This multiplies the view matrix by the model matrix, and stores the
         // result in the MVP matrix (which currently contains model * view).
