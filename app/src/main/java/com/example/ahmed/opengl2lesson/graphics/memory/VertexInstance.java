@@ -14,4 +14,8 @@ class VertexInstance {
         this.y = y;
         this.z = z;
     }
+
+    float[] array() {
+        return new float[]{x, y, z};
+    }
 }
