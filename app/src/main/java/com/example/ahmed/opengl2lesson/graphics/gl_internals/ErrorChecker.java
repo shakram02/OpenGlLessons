@@ -20,7 +20,7 @@ public class ErrorChecker {
      *
      * @param glOperation - Name of the OpenGL call to check.
      */
-    static void checkGlError(String glOperation) {
+    public static void checkGlError(String glOperation) {
         String errorMessage = null;
         int error;
 

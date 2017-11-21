@@ -59,7 +59,7 @@ public abstract class FloatBufferBasedArray {
     /**
      * @return The number of logical instances in the array (i.e position)
      */
-    private int getItemCount() {
+    int getItemCount() {
         return raw.size() / floatsPerItem;
     }
 
@@ -67,7 +67,7 @@ public abstract class FloatBufferBasedArray {
     /**
      * @return Size of all objects in the array in bytes
      */
-    public int getSizeInBytes() {
+    int getSizeInBytes() {
         return getItemCount() * FLOAT_SIZE;
     }
 

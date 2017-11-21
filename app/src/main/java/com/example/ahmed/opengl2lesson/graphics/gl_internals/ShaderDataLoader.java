@@ -49,41 +49,19 @@ public class ShaderDataLoader {
     /**
      * Load data to shaders
      *
-     * @param handle              handle of the shader variable
-     * @param itemLength          number of items in an instance i.e 3 floats/location point
-     * @param type                GL_FLOAT...atc
-     * @param normalized          Determines whether the values are norm
-     * @param strideInBytes       Number of bytes to jump when reading to get a value
-     * @param singleContentBuffer Buffer containing data
+     * @param dataBuffer Buffer object containing data
      */
-    void loadData(int handle, int itemLength,
-                  int type, boolean normalized, int strideInBytes,
-                  Buffer singleContentBuffer) {
+    public void loadData(FloatBufferBasedArray dataBuffer) {
         assertInState(States.Started);
 
-        singleContentBuffer.position(0);
-        GLES20.glVertexAttribPointer(handle, itemLength, type, normalized,
-                strideInBytes, singleContentBuffer);
+        GLES20.glVertexAttribPointer(dataBuffer.getGlHandle(), dataBuffer.getItemLength(),
+                dataBuffer.getType(), dataBuffer.isNormalized(), dataBuffer.getStride(), dataBuffer.getBuffer());
         ErrorChecker.checkGlError("LOAD_DATA:glVertexAttribPointer");
 
-        GLES20.glEnableVertexAttribArray(handle);
+        GLES20.glEnableVertexAttribArray(dataBuffer.getGlHandle());
         ErrorChecker.checkGlError("LOAD_DATA:glEnableVertexAttribArray");
 
-        handleStack.push(handle);
-    }
-
-    public void loadData(FloatBufferBasedArray array) {
-        assertInState(States.Started);
-
-
-        GLES20.glVertexAttribPointer(array.getGlHandle(), array.getItemLength(),
-                array.getType(), array.isNormalized(), array.getStride(), array.getBuffer());
-        ErrorChecker.checkGlError("LOAD_DATA:glVertexAttribPointer");
-
-        GLES20.glEnableVertexAttribArray(array.getGlHandle());
-        ErrorChecker.checkGlError("LOAD_DATA:glEnableVertexAttribArray");
-
-        handleStack.push(array.getGlHandle());
+        handleStack.push(dataBuffer.getGlHandle());
     }
 
     /**
