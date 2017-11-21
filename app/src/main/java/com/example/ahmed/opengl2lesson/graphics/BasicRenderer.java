@@ -5,11 +5,11 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.ColorArray;
 import com.example.ahmed.opengl2lesson.graphics.gl_internals.FrustumManager;
-import com.example.ahmed.opengl2lesson.graphics.gl_internals.ShaderDataLoader;
+import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.ColorArray;
 import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.GLProgram;
 import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.VertexArray;
+import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.VertexBufferObject;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,11 +21,6 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 public class BasicRenderer implements GLSurfaceView.Renderer {
-
-    /**
-     * Store our model data in a float buffer.
-     */
-    private ColorArray mTriangleColors;
 
     private VertexArray mTriangleVertices;
 
@@ -46,6 +41,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
      * of being located at the center of the universe) to world space.
      */
     private float[] mModelMatrix = new float[16];
+    private VertexBufferObject colorVbo;
 
     public BasicRenderer() {
 
@@ -53,6 +49,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 
     private GLProgram program;
     private String mvpMatrixVariableName = "u_MVPMatrix";
+    private VertexBufferObject positionVbo;
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -129,14 +126,20 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
 
         final float[] triangleColorData = {
                 1.0f, 0.0f, 0.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f,
                 0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f
         };
 
         mTriangleVertices = new VertexArray(triangle1VerticesData,
                 program.getVariableHandle(positionVariableName), true);
-        mTriangleColors = new ColorArray(triangleColorData,
+        /*
+      Store our model data in a float buffer.
+     */
+        ColorArray mTriangleColors = new ColorArray(triangleColorData,
                 program.getVariableHandle(colorVariableName), true);
+
+        positionVbo = new VertexBufferObject(mTriangleVertices);
+        colorVbo = new VertexBufferObject(mTriangleColors);
     }
 
     @Override
@@ -165,12 +168,9 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
      */
     private float[] mMVPMatrix = new float[16];
 
-    private final ShaderDataLoader shaderDataLoader = new ShaderDataLoader();
-
     private void drawTriangle() {
-        shaderDataLoader.start();
-        shaderDataLoader.loadData(mTriangleVertices);
-        shaderDataLoader.loadData(mTriangleColors);
+        positionVbo.startDraw();
+        colorVbo.startDraw();
 
         // This multiplies the view matrix by the model matrix, and stores the
         // result in the MVP matrix (which currently contains model * view).
@@ -180,10 +180,13 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
         // (which now contains model * view * projection).
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 
+        // Send the matrix to shaders
         GLES20.glUniformMatrix4fv(program.getVariableHandle(mvpMatrixVariableName),
                 1, false, mMVPMatrix, 0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
 
-        shaderDataLoader.disableHandles();
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, colorVbo.getItemCount());
+
+        colorVbo.endDraw();
+        positionVbo.endDraw();
     }
 }
