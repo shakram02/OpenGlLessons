@@ -4,12 +4,14 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.example.ahmed.opengl2lesson.graphics.gl_internals.FrustumManager;
 import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.ColorArray;
 import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.GLProgram;
 import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.VertexArray;
 import com.example.ahmed.opengl2lesson.graphics.gl_internals.memory.VertexBufferObject;
+import com.example.ahmed.opengl2lesson.graphics.utils.ValueLimiter;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -147,17 +149,40 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
         mProjectionMatrix = FrustumManager.createFrustum(0, 0, width, height);
     }
 
+    private ValueLimiter horizontalLimiter = new ValueLimiter(0, -1, 1, 0.08f);
+    private ValueLimiter verticalLimiter = new ValueLimiter(0, -1, 1, 0.08f);
+
+
+    void moveRight() {
+        horizontalLimiter.increment();
+    }
+
+    void moveLeft() {
+        horizontalLimiter.decrement();
+    }
+
+    void moveUp() {
+        verticalLimiter.increment();
+    }
+
+    void moveDown() {
+        verticalLimiter.decrement();
+    }
+
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
         // Do a complete rotation every 10 seconds.
         long time = SystemClock.uptimeMillis() % 10000L;
-        float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
+        float rotationRatio = time / 1000.0f;
+
 
         // Draw the triangle facing straight on.
+        float deltaX = (float) Math.sin(rotationRatio * Math.PI);
+        float deltaY = (float) Math.cos(rotationRatio * Math.PI);
         Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        Matrix.translateM(mModelMatrix, 0, deltaX, deltaY, 0);
 
         drawTriangle();
     }

@@ -6,21 +6,23 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 
 import com.example.ahmed.opengl2lesson.graphics.BasicRenderer;
+import com.example.ahmed.opengl2lesson.graphics.CustomSurfaceView;
 
 public class MainActivity extends AppCompatActivity {
 
     /**
      * Hold a reference to our GLSurfaceView
      */
-    private GLSurfaceView mGLSurfaceView;
+    private CustomSurfaceView mGLSurfaceView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mGLSurfaceView = new GLSurfaceView(this);
         final ActivityManager activityManager =
                 (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -32,12 +34,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        mGLSurfaceView = new CustomSurfaceView(this);
         mGLSurfaceView.setEGLContextClientVersion(2);
         // Request an OpenGL ES 2.0 compatible context.
         mGLSurfaceView.setRenderer(new BasicRenderer());
 
         setContentView(mGLSurfaceView);
     }
+
 
     @Override
     protected void onPause() {
