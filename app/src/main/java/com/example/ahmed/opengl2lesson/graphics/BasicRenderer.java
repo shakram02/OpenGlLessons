@@ -22,8 +22,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class BasicRenderer implements GLSurfaceView.Renderer {
 
-    private VertexArray mTriangleVertices;
-
     /**
      * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
      * it positions things relative to our eye.
@@ -42,14 +40,10 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
      */
     private float[] mModelMatrix = new float[16];
     private VertexBufferObject colorVbo;
-
-    public BasicRenderer() {
-
-    }
+    private VertexBufferObject positionVbo;
 
     private GLProgram program;
-    private String mvpMatrixVariableName = "u_MVPMatrix";
-    private VertexBufferObject positionVbo;
+    private String U_MVP_MATRIX = "u_MVPMatrix";
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -106,11 +100,14 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
                 + "}                              \n";
 
         program = new GLProgram(vertexShader, fragmentShader);
+
         String positionVariableName = "a_Position";
         program.declareAttribute(positionVariableName);
+
         String colorVariableName = "a_Color";
         program.declareAttribute(colorVariableName);
-        program.declareUniform(mvpMatrixVariableName);
+
+        program.declareUniform(U_MVP_MATRIX);
 
         // Tell OpenGL to use this program when rendering.
         program.activate();
@@ -130,7 +127,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
                 0.0f, 0.0f, 1.0f, 1.0f,
         };
 
-        mTriangleVertices = new VertexArray(triangle1VerticesData,
+        VertexArray mTriangleVertices = new VertexArray(triangle1VerticesData,
                 program.getVariableHandle(positionVariableName), true);
         /*
       Store our model data in a float buffer.
@@ -181,7 +178,7 @@ public class BasicRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 
         // Send the matrix to shaders
-        GLES20.glUniformMatrix4fv(program.getVariableHandle(mvpMatrixVariableName),
+        GLES20.glUniformMatrix4fv(program.getVariableHandle(U_MVP_MATRIX),
                 1, false, mMVPMatrix, 0);
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, colorVbo.getItemCount());
